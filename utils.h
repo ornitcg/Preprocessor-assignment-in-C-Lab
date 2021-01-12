@@ -2,15 +2,18 @@
 #define MAX_ARGS 2
 #define OPEN_COM "/*"
 #define CLOSE_COM "*/"
+#define QUOTE "\""
 #define INCLUDE "#include"
 #define EMPTY_STRING ""
-#define TO_REMOVE " \""
+#define FOREVER for(;;)
 
-
+char *removeFromTo(char *string, int from ,int to);
 
 void remChars(char* s, char* newS, char *toRemove);
-int checkExtention( char *fileName);
 
-FILE *copyHeaders(FILE *c1F , char *fileName);
-FILE *makeCopy( FILE *inputFile, char *fileName);
+int checkExtention( char *fileName);
 int subStrPos(char *string ,char *sub);
+
+FILE *makeCopy( FILE *inputFile, char *fileName);
+
+

@@ -16,9 +16,7 @@ FILE *removeComments( FILE *inputFile, char *fileName){
 	
 	cpyF = fopen(newName , "w");	/*create new file*/
 
-
 	while(fgets(line , MAX_LINE-1 , inputFile) != NULL){
-		
 		l = cleanCommentsLine(line, &inComment);
 		if (l == NULL)
 			fprintf(cpyF,"%s", EMPTY_STRING);
@@ -31,23 +29,27 @@ FILE *removeComments( FILE *inputFile, char *fileName){
 /*cleans all comment parts from a single line
 returns pointer to clean string*/
 char *cleanCommentsLine(char *line , int *inComment){
-	int len, openPos, closePos;
+	int len, openPos, closePos, openQuot, closeQuot;
 
 	len = strlen(line);
 	openPos = subStrPos(line ,OPEN_COM);
 	closePos = subStrPos(line ,CLOSE_COM);
-	
+	openQuot = subStrPos(line ,QUOTE);
+	closeQuot = subStrPos(line ,QUOTE);
 	while (openPos > -1 || closePos > -1 || *inComment){
-		
+
 		if (*inComment){       			 /*assuming that all comments are valid*/
+			
 			if (closePos == -1)			/* the whole row is part of comment*/
 				return NULL;
 			
 			else line = removeFromTo(line, 0 , closePos+1);
+			
 			*inComment = 0;
 		}
-		else if (closePos>-1)		     /* comment ends within the line*/
-				line = removeFromTo(line, openPos , closePos+1);
+		else if (closePos > -1)		     /* comment ends within the line*/
+			line = removeFromTo(line, openPos , closePos+1);
+		
 		else {				    /* comment begins but not ends in the line*/
 			line = removeFromTo(line, openPos , len);
 			*inComment = 1;	
@@ -57,5 +59,7 @@ char *cleanCommentsLine(char *line , int *inComment){
 		closePos = subStrPos(line ,CLOSE_COM);
 	}
 	return line;
+
+
 
 }

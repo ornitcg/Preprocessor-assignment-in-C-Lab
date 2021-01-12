@@ -3,6 +3,65 @@
 #include "utils.h"
 
 
+
+
+
+/*Returns 1 if extention is valid and 0 if there 
+is a problem with the file name and extention*/
+int checkExtention( char *fileName){
+	int i, len;
+	len = strlen(fileName);
+	if (len == FILENAME_MAX){
+		fprintf(stderr, "Error - too long file name.\n");
+		return 0;
+	}
+	if (len < 1) {
+		fprintf(stderr, "Error - too short file name.\n");
+		return 0;
+	}
+	
+	for (i = len ; i > 0 ; i--){
+		if (fileName[i] == '.')
+			break;
+	}
+	
+	if (i == len){
+		fprintf(stderr, "Error - There is no extention to the file.\n");
+		return 0;
+	}
+	/*if (fileName[i+1] == 'c' && (fileName[i+2] == '\0' || */
+	
+	return 1;
+}
+
+
+/*Returns -1 if substring was not found
+If found, returns the position in string*/
+
+int subStrPos(char *string ,char *sub){
+	int i,j, lenStr, lenSub;
+
+	if(string == NULL)
+ 		return -1;
+
+	lenStr = strlen(string);
+	lenSub = strlen(sub);
+
+	if (lenSub == 0 || lenStr == 0) return -1;
+	for(i = 0 ; i < lenStr ; i++){  /*looking for the sub string in string*/
+
+		for(j = 0 ; j < lenSub ; j++){
+			if (string[i+j] != sub[j])
+				break;  /*sub is not here*/
+		}
+		if (j == lenSub) return i; /*sub was found starting from position i*/	
+	}
+	return -1;
+
+}
+
+/*Gets a string and a range, and returns the string 
+without the part that was in the given range*/
 char *removeFromTo(char *string, int from ,int to){
 	int len , i;
 	len = strlen(string);
@@ -22,100 +81,6 @@ char *removeFromTo(char *string, int from ,int to){
 	}
 	return string;
 }
-
-/*FILE *makeCopy( FILE *inputFile, char *fileName){
-	FILE *cpyF ;
-	char newName[FILENAME_MAX], line[MAX_LINE];
-	int i;
-
-	strcpy(newName,fileName);
-	strcat(newName,"1");
-	
-	cpyF = fopen(newName , "w");	
-
-	
-	while(fgets(line , MAX_LINE-1 , inputFile) != NULL){
-		fprintf(cpyF,"%s",line);
-		i = subStrPos(&line[10] , CLOSE_COM);
-	}
-
-	return cpyF;
-}*/
-
-
-/*Returns 1 if extention is valid and 0 if there 
-is a problem with the file name and extention*/
-int checkExtention( char *fileName){
-	int i,len;
-	len = strlen(fileName);
-	if (len == FILENAME_MAX){
-		fprintf(stderr, "Error - too long file name.\n");
-		return 0;
-	}
-	
-	for (i = len ; i > 0 ; i--){
-		if (fileName[i] == '.')
-			break;
-	}
-	if (i< 1) {
-		fprintf(stderr, "Error - too short file name.\n");
-		return 0;
-	}
-	if (i == len){
-		fprintf(stderr, "Error - There is no extention to the file.\n");
-		return 0;
-	}
-	/*if (fileName[i+1] == 'c' && (fileName[i+2] == '\0' || */
-	
-	return 1;
-}
-
-#include <stdio.h>
-
-/*Removes spaces and tabs from source string 's', 
-the clean string will be inserted into 'newS'*/
-void remChars(char* s, char* newS, char *toRemove){
-	char *word; 
-	int length ;
-	char tmpNew[MAX_LINE] = {'\0'};
-
-	length = strlen(s);
-	word = strtok(s, toRemove); 
-	if (word == NULL) return;		
-	strcpy(tmpNew, word); 
-	while((word = strtok(NULL, toRemove))!=NULL){
-
-		length = strlen(tmpNew);
-		strcpy(tmpNew+length, word);
-
-	}
-	strcpy(newS, tmpNew);
-	 
-}
-
-/*Returns -1 if substring was not found
-If found, returns the start position in string*/
-
-int subStrPos(char *string ,char *sub){
-	int i,j, lenStr, lenSub;
-	
-	lenStr = strlen(string);
-	lenSub = strlen(sub);
-	if (lenSub == 0 || lenStr == 0) return -1;
-	for(i = 0 ; i < lenStr ; i++){
-
-		for(j = 0 ; j < lenSub ; j++){
-			if (string[i+j] != sub[j])
-				break;
-
-		}
-		if (j == lenSub) return i;	
-	}
-	return -1;
-
-}
-
-
 
 
 	
