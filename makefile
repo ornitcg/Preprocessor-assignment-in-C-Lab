@@ -18,4 +18,5 @@ headers.o: headers.c headers.h utils.h
 utils.o: utils.c utils.h
 	gcc -ansi -g -Wall -pedantic -c utils.c
 
-clean:  *.o *~ prog
+clean: 
+	rm *.o  prog

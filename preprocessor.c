@@ -6,11 +6,11 @@
 
 /*Author: Ornit cohen gindi*/
 
-/*Filename Assumptions: the only thing to check is the extention and not other wrong charachters*/
-/*Comments Assumptions: comments are not nested, and do not appear inside other strings*/
+
+/*Comments Assumptions: comments are not nested, and no quoteation marks appear inside string*/
 /*Header Assumptions: can appear in middle of code, not inside other strings, */
 /*and always first in line (aside of spaces)*/
-/*Added input file and heder file to run this code with*/
+/*Added a messy input file and cute (non C)  header file to run this code with*/
 
 int main(int argc, char *argv[]){
 
@@ -18,7 +18,11 @@ int main(int argc, char *argv[]){
 	FILE *inpF ,*c1F, *c2F;
 
 	if (argc < MAX_ARGS) {
-		fprintf(stderr,"Error - There is no input file\n");
+		fprintf(stderr,"Error - There is no input file\n"); /*none given*/
+		return 0;		
+	}
+	if (argc > 2) {
+		fprintf(stderr,"Error - Too many arguments\n"); /*none given*/
 		return 0;		
 	}
 
@@ -29,7 +33,7 @@ int main(int argc, char *argv[]){
 	inpF = fopen(inpFileName, "r");
 
 	if (inpF == NULL){ 			 		 
-		fprintf(stderr,"Error cannot open file.\n");
+		fprintf(stderr,"Error - cannot open file, file name may be wrong.\n");  /*like does not exist*/
 		return 0;
 	} 
 	

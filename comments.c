@@ -17,6 +17,7 @@ FILE *removeComments( FILE *inputFile, char *fileName){
 	cpyF = fopen(newName , "w");	/*create new file*/
 
 	while(fgets(line , MAX_LINE-1 , inputFile) != NULL){
+		/*fprintf(stderr,"line %d ",i++);*/
 		l = cleanCommentsLine(line, &inComment);
 		if (l == NULL)
 			fprintf(cpyF,"%s", EMPTY_STRING);
@@ -29,37 +30,59 @@ FILE *removeComments( FILE *inputFile, char *fileName){
 /*cleans all comment parts from a single line
 returns pointer to clean string*/
 char *cleanCommentsLine(char *line , int *inComment){
-	int len, openPos, closePos, openQuot, closeQuot;
-
+	int len, openCom, closeCom, openQuot, closeQuot;
+	char *temp;
 	len = strlen(line);
-	openPos = subStrPos(line ,OPEN_COM);
-	closePos = subStrPos(line ,CLOSE_COM);
-	openQuot = subStrPos(line ,QUOTE);
-	closeQuot = subStrPos(line ,QUOTE);
-	while (openPos > -1 || closePos > -1 || *inComment){
+	openCom = subStrPos(line ,OPEN_COM);  /*position of first comment opening*/
+	closeCom = subStrPos(line ,CLOSE_COM); /*position of first comment closing*/
+	openQuot = subStrPos(line ,QUOTE);  	/*position of first quote mark*/
 
+	if ((openQuot = subStrPos(line ,QUOTE))>-1)  /*case there is a quote, find the position of closing quote*/
+		if ((closeQuot = subStrPos(line + openQuot + 1 ,QUOTE))>-1) 
+			closeQuot += openQuot +1;
+	temp = line;
+	while (openCom > -1 || closeCom > -1 || *inComment){
+		
 		if (*inComment){       			 /*assuming that all comments are valid*/
-			
-			if (closePos == -1)			/* the whole row is part of comment*/
+			if (closeCom == -1)			/* the whole row is part of comment*/
 				return NULL;
 			
-			else line = removeFromTo(line, 0 , closePos+1);
+			else temp = removeFromTo(temp, 0 , closeCom+1);
 			
 			*inComment = 0;
 		}
-		else if (closePos > -1)		     /* comment ends within the line*/
-			line = removeFromTo(line, openPos , closePos+1);
 		
+		else if (((openQuot > -1) && (closeQuot >-1)) && ((openQuot < openCom)  && (closeCom < closeQuot))){  
+			/*skipping string that contains a comment*/
+			temp = temp + closeQuot+1;
+			
+		}
+		else if (openCom > -1 && closeCom > -1 && openCom  > closeQuot){	/*comment comes after quot*/	     
+			temp = openCom + removeFromTo(temp, openCom , closeCom + 1);
+			
+		}
+
+		else if (openCom > -1 && closeCom > -1){		     /* comment ends within the line*/
+			temp = openCom + removeFromTo(temp, openCom , closeCom + 1);
+			
+		}
 		else {				    /* comment begins but not ends in the line*/
-			line = removeFromTo(line, openPos , len);
+			temp = openCom + removeFromTo(temp, openCom , len);
 			*inComment = 1;	
 			break;
 		}
-		openPos = subStrPos(line ,OPEN_COM);
-		closePos = subStrPos(line ,CLOSE_COM);
+		openCom = subStrPos(temp ,OPEN_COM);
+		closeCom = subStrPos(temp ,CLOSE_COM);
+		openQuot = subStrPos(temp ,QUOTE);
+		if (openQuot > -1){  /*case there is a quote, find the closing quote*/
+			closeQuot = subStrPos(temp + openQuot + 1 ,QUOTE);
+				if (closeQuot > -1) 
+					closeQuot = closeQuot + openQuot +1;
+		}
+		
 	}
-	return line;
-
-
+	return line; /*stays poining at beginning of line while temp dose all the cutting*/
 
 }
+
+

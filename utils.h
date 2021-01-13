@@ -1,5 +1,8 @@
 #define MAX_LINE 500
 #define MAX_ARGS 2
+#define SPACES " \t"
+#define EXTENTION ".c"
+#define DOT "."
 #define OPEN_COM "/*"
 #define CLOSE_COM "*/"
 #define QUOTE "\""
@@ -15,5 +18,3 @@ int checkExtention( char *fileName);
 int subStrPos(char *string ,char *sub);
 
 FILE *makeCopy( FILE *inputFile, char *fileName);
-
-

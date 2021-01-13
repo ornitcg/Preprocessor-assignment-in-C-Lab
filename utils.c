@@ -4,35 +4,35 @@
 
 
 
-
-
 /*Returns 1 if extention is valid and 0 if there 
 is a problem with the file name and extention*/
 int checkExtention( char *fileName){
-	int i, len;
-	len = strlen(fileName);
-	if (len == FILENAME_MAX){
+	int  lenName, lenExt, extPos, dotPos;
+	char *temp;
+
+	lenName = strlen(fileName);
+	lenExt = strlen(EXTENTION);
+	if (lenName == FILENAME_MAX){
 		fprintf(stderr, "Error - too long file name.\n");
 		return 0;
 	}
-	if (len < 1) {
-		fprintf(stderr, "Error - too short file name.\n");
+	dotPos = subStrPos(fileName ,DOT);
+	extPos = subStrPos(fileName ,EXTENTION);
+	if (extPos == -1 && dotPos > -1) {
+		fprintf(stderr, "Error - Wrong File Extention.\n"); /*if the is an extention that does not begin with .c as in .exe*/
 		return 0;
 	}
+	if (extPos > -1){
+		temp = fileName + extPos;
 	
-	for (i = len ; i > 0 ; i--){
-		if (fileName[i] == '.')
-			break;
+		if (*(temp + lenExt)  != '\0'){ /*if there is any char right after the .c as in .cpp*/
+			fprintf(stderr, "Error - Wrong File Extention.\n");
+			return 0;
+		}
 	}
-	
-	if (i == len){
-		fprintf(stderr, "Error - There is no extention to the file.\n");
-		return 0;
-	}
-	/*if (fileName[i+1] == 'c' && (fileName[i+2] == '\0' || */
-	
 	return 1;
 }
+
 
 
 /*Returns -1 if substring was not found
